@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/location.py": {
-      "runtime": "python3.9"
-    }
-  }
-}
