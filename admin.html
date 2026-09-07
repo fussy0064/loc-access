@@ -75,11 +75,14 @@
               return;
             }
 
+            const popupText = `${id}<br>Accuracy: ${Math.round(data.accuracy)}m<br>Device: ${data.device || "unknown"}`;
+
             if (markers[id]) {
               markers[id].setLatLng([data.lat, data.lon]);
+              markers[id].setPopupContent(popupText);
             } else {
               markers[id] = L.marker([data.lat, data.lon]).addTo(map)
-                .bindPopup(`${id}<br>Accuracy: ${Math.round(data.accuracy)}m`);
+                .bindPopup(popupText);
             }
           });
         });
