@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Share</title>
+  <title>Share My Location</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
@@ -12,9 +12,9 @@
 </head>
 <body>
 
-  <h2>Share My Location</h2>
-  <p>Tap below to Give Permision of your Location!</p>
-  <button onclick="shareLocation()"> Hello do Not Fear Nothing is Weird</button>
+  <h2>Delivery Tracking</h2>
+  <p>Tap below to share your location with dispatch.</p>
+  <button onclick="shareLocation()">Share My Location</button>
   <p id="status"></p>
 
   <script type="module">
@@ -33,7 +33,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Give this courier a stable ID so their location updates the same record
     let courierId = localStorage.getItem("courierId");
     if (!courierId) {
       courierId = "courier_" + Math.random().toString(36).slice(2, 9);
@@ -42,7 +41,7 @@
 
     window.shareLocation = function () {
       if (!navigator.geolocation) {
-        document.getElementById("status").innerText = "Hello! Dear can You Turn ON you Location?.";
+        document.getElementById("status").innerText = "Geolocation not supported on this device.";
         return;
       }
 
@@ -63,7 +62,7 @@
           });
 
           document.getElementById("status").innerText =
-            `Wait Magic is Comming (accuracy ${Math.round(accuracy)}m). Thanks Your Offer is Comming Dear.`;
+            `Sharing live location (accuracy ${Math.round(accuracy)}m). Keep this tab open.`;
         },
         (error) => {
           document.getElementById("status").innerText = "Error: " + error.message;
