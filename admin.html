@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Live Tracking</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #map { height: 500px; margin-top: 20px; display: none; }
+    input { padding: 8px; margin: 5px; font-size: 16px; }
+    button { padding: 8px 16px; font-size: 16px; }
+    #error { color: red; }
+  </style>
+</head>
+<body>
+
+  <h2>Admin Dashboard</h2>
+
+  <div id="login">
+    <input type="email" id="email" placeholder="Admin email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <p id="error"></p>
+  </div>
+
+  <div id="map"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaGqWidMpp5yrfuEgHQCNtRC-KIBf1VcI",
+      authDomain: "loc-access-853e3.firebaseapp.com",
+      projectId: "loc-access-853e3",
+      storageBucket: "loc-access-853e3.firebasestorage.app",
+      messagingSenderId: "254101115524",
+      appId: "1:254101115524:web:ac71a9421462ad39c928d1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.login = function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .catch((err) => {
+          document.getElementById("error").innerText = err.message;
+        });
+    };
+
+    let map, markers = {};
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("map").style.display = "block";
+
+        map = L.map('map').setView([-6.7924, 39.2083], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        // Live updates: any courier location change reflects instantly
+        onSnapshot(collection(db, "locations"), (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const id = change.doc.id;
+            const data = change.doc.data();
+
+            if (change.type === "removed") {
+              if (markers[id]) { map.removeLayer(markers[id]); delete markers[id]; }
+              return;
+            }
+
+            if (markers[id]) {
+              markers[id].setLatLng([data.lat, data.lon]);
+            } else {
+              markers[id] = L.marker([data.lat, data.lon]).addTo(map)
+                .bindPopup(`${id}<br>Accuracy: ${Math.round(data.accuracy)}m`);
+            }
+          });
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
